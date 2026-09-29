@@ -1,0 +1,14 @@
+# 光模块财报问答知识库 —— 依赖（Python 3.11+）
+#
+# 注：torch 装 PyPI 默认拿到的是 CPU-only 版；要 GPU 用阿里云 pytorch-wheels 直链
+# 装 cu 版本（索引式安装会报错）。CPU 跑 11543 块的编码约 20 分钟，GPU 几分钟。
+torch==2.14.0+cu132
+transformers==5.17.0
+sentence-transformers==6.1.0
+huggingface-hub==1.32.0
+chromadb==1.5.9
+rank-bm25==0.2.2
+jieba==0.42.1
+pymupdf==1.28.2
+numpy==2.5.3
+requests==2.34.2

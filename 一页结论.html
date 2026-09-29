@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>光模块财报问答知识库 · 一页结论</title>
+<style>
+  @page { size: A4; margin: 11mm 13mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #16181d; background: #fff;
+         font: 9.3pt/1.56 "Source Han Sans CN", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 16pt; margin: 0 0 2px; letter-spacing: -.2px; }
+  .sub { color: #6b7280; font-size: 8.5pt; margin-bottom: 9px; }
+  h2 { font-size: 10.4pt; margin: 11px 0 5px; padding-left: 7px;
+       border-left: 3px solid #2563eb; line-height: 1.3; }
+  h2 .n { color: #2563eb; font-weight: 700; margin-right: 3px; }
+  p { margin: 5px 0; }
+  b, strong { font-weight: 700; }
+  .hl { background: #fff3c4; padding: 0 2px; }
+  .kpi { display: flex; gap: 8px; margin: 9px 0 3px; }
+  .kpi div { flex: 1; border: 1px solid #e3e6ec; border-radius: 6px; padding: 7px 9px;
+             background: #fafbfd; }
+  .kpi .v { font-size: 15pt; font-weight: 700; color: #2563eb; line-height: 1.15; }
+  .kpi .l { font-size: 8.2pt; color: #6b7280; }
+  .flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 8px 0 2px; }
+  .box { border: 1px solid #d7dbe3; border-radius: 5px; padding: 5px 8px;
+         background: #f7f9fc; font-size: 8.6pt; line-height: 1.4; }
+  .box .t { font-weight: 700; display: block; }
+  .box .d { color: #6b7280; font-size: 7.8pt; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.7pt; margin: 6px 0 2px; }
+  th, td { border-bottom: 1px solid #e6e9ef; padding: 3.4px 5px; text-align: left; }
+  th { background: #f2f5fa; font-weight: 700; font-size: 8.4pt; }
+  td.c, th.c { text-align: center; }
+  .ok { color: #15803d; font-weight: 700; }
+  .warn { color: #b45309; font-weight: 700; }
+  .bad { color: #b91c1c; font-weight: 700; }
+  ul { margin: 4px 0 4px; padding-left: 17px; }
+  li { margin: 2.5px 0; }
+  .foot { margin-top: 11px; padding-top: 6px; border-top: 1px solid #e6e9ef;
+          color: #6b7280; font-size: 7.9pt; }
+  .two { display: flex; gap: 14px; }
+  .two > div { flex: 1; }
+  code { background: #f1f3f7; padding: 0 3px; border-radius: 3px;
+         font: 8.3pt ui-monospace, Consolas, monospace; }
+</style></head><body>
+
+<h1>光模块公司财报问答知识库</h1>
+<div class="sub">12 家 A 股光模块/光通信公司 × (2025 年度报告 + 2026 半年度报告) = 24 份 PDF ·
+11543 个文本块 · 向量 + BM25 混合检索 · 答案逐条带公司/报告/页码出处 · 全程不调用大模型 API</div>
+
+<div class="kpi">
+  <div><div class="v">11543</div><div class="l">文本块（年报 6604 / 半年报 4939）</div></div>
+  <div><div class="v">24</div><div class="l">份财报，全部取自巨潮资讯网</div></div>
+  <div><div class="v">10 / 10</div><div class="l">评测题作答正确（1 题首句不理想）</div></div>
+  <div><div class="v">12 / 12</div><div class="l">跨公司题逐家取到数并核对</div></div>
+</div>
+
+<h2><span class="n">1</span>流水线</h2>
+<div class="flow">
+  <div class="box"><span class="t">① 语料</span><span class="d">巨潮资讯网 24 份 PDF → PyMuPDF 逐页抽取 →
+    按章节/表格边界切块，11543 块，每块带公司·报告·章节·页码</span></div>
+  <div class="box"><span class="t">② 双路索引</span><span class="d">Qwen3-Embedding-0.6B → Chroma（cosine）<br>
+    jieba + BM25Okapi → bm25.pkl</span></div>
+  <div class="box"><span class="t">③ 召回</span><span class="d">RRF（k=60）融合 + 公司/报告期元数据预过滤<br>
+    另备表头词定位通道（跨公司/定性题用）</span></div>
+  <div class="box"><span class="t">④ 答案层</span><span class="d">摘句打分 / 显式计算 / 拒答守卫<br>
+    每条答案带页码出处</span></div>
+</div>
+
+<h2><span class="n">2</span>评测结果（10 题，5 类）</h2>
+<table>
+  <tr><th style="width:5%">题</th><th style="width:23%">类型</th><th style="width:36%">问题要点</th>
+      <th class="c" style="width:14%">三路召回最好</th><th style="width:22%">最终作答</th></tr>
+  <tr><td>Q1</td><td>单公司·精确数字</td><td>新易盛 2026H1 营业收入</td><td class="c">#3</td><td class="ok">对，首条即目标行</td></tr>
+  <tr><td>Q2</td><td>单公司·原因/语义</td><td>中际旭创收入大增的原因</td><td class="c bad">未命中</td><td class="ok">对</td></tr>
+  <tr><td>Q3</td><td>表格 + 计算</td><td>太辰光营业成本与毛利率</td><td class="c">#1</td><td class="ok">对，算出 34.81%</td></tr>
+  <tr><td>Q4</td><td>★单位陷阱</td><td>德科立 2026H1 营业收入</td><td class="c">#1</td><td class="ok">对（545,069.47 千元）</td></tr>
+  <tr><td>Q5</td><td>★跨公司·增速排名</td><td>收入同比增速前三</td><td class="c bad">3/12 家</td><td class="ok">对，12/12 家取到数</td></tr>
+  <tr><td>Q6</td><td>★跨公司·规模排名</td><td>收入规模前三</td><td class="c bad">5/12 家</td><td class="ok">对，12/12 家取到数</td></tr>
+  <tr><td>Q7</td><td>年报 vs 半年报</td><td>光迅科技 2025 全年营业收入</td><td class="c bad">未命中</td><td class="ok">对（119.29 亿）</td></tr>
+  <tr><td>Q8</td><td>定性·双主业</td><td>剑桥科技的主要业务</td><td class="c bad">未命中</td><td class="warn">对，但首句不理想</td></tr>
+  <tr><td>Q9</td><td>★数字完整性陷阱</td><td>新易盛 2025 全年营业收入</td><td class="c">#1</td><td class="ok">对（248.42 亿）</td></tr>
+  <tr><td>Q10</td><td>★应拒答 / 幻觉测试</td><td>宁德时代 2026H1 营业收入</td><td class="c">—</td><td class="ok">拒答正确</td></tr>
+</table>
+
+<h2><span class="n">3</span>核心结论：跨公司取数，单次检索不够</h2>
+<p>把 12 家公司的财报放进同一个向量库，<b>稠密检索并不会自动替你收齐</b>。
+问「增速最快的前三家」时，向量路只覆盖 4/12 家、BM25 路 4/12 家、融合后反而掉到 3/12 家 ——
+融合在这里是负贡献：各家写各家的叙述，没有哪一块文本「长得像」一个跨文档的排名答案。
+改走两条<b>定位通道</b>后覆盖到 12/12：跨公司排名题对 12 家<b>逐公司枚举</b>，
+用表头词 <code>主要会计数据</code> 定位同一张可比口径的表，再解析排序、逐家与金标对账；
+定性题用标题词 <code>主营业务</code> 定位章节，绕开与「公司/业务」词面高度重合的同业竞争段落。</p>
+<p class="hl">数字取全之后，两个真实陷阱才会露出来：德科立整份报告用「千元」而其余 11 家用「元」，
+不换算它会从垫底窜到规模第一；新易盛母公司营业收入（267.11 亿）比合并数（209.10 亿）还大，
+不截断母公司列就会答错。</p>
+
+<h2><span class="n">4</span>已知短板（如实记）</h2>
+<div class="two">
+<div>
+<ul>
+  <li><b>Q8 首句不理想</b>：正确句排在第 2 条，第 1 条是「行业情况未发生重大变化」这类泛泛句，
+      打分公式里短句占便宜。</li>
+  <li><b>拒答靠启发式</b>：按公司名后缀（公司/集团/科技/时代…）识别库外实体。
+      英文名 <code>Coherent</code> 或简称「宁王」会漏判，届时可能拿库里某家的数字作答。</li>
+</ul>
+</div>
+<div>
+<ul>
+  <li><b>Q9 是绕开不是堵住</b>：引用的是原文里完整写出的叙述句；
+      若某口径只存在于被 PDF 切断的表格里（<code>24,841,854,840. 22</code>），仍会踩到。</li>
+  <li><b>答案层不生成、只摘录</b>：好处是每个数字都能翻回页码核对，
+      代价是需要归纳、改写的问题答不了。</li>
+</ul>
+</div>
+</div>
+
+<div class="foot">
+  逐题记录（召回了哪些块 / 答对没有 / 错在哪 / 怎么修）见 <code>eval/report.md</code>；
+  问答界面截图见 <code>shots/</code>；复现步骤见 <code>README.md</code>。
+  财报 PDF 来自巨潮资讯网公开披露文件，仅作技术验证用。
+</div>
+
+</body></html>

@@ -1,0 +1,25 @@
+# 密钥 / 本地配置 —— 绝不入库
+.env
+.env.*
+
+# 语料与索引（体积大，跑 fetch/extract/chunk/build_index 可重建）
+data/pdfs/
+data/txt/
+data/pages/
+data/db/
+data/chunks.jsonl
+data/bm25.pkl
+
+# 中间产物
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 评测临时文件（调试脚本/中间输出，已归档在 _scratch/）
+_scratch/
+_eval*.log
+_probe*.txt
+_probe*.py
+_*.txt
+*.log

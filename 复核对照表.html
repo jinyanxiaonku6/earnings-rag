@@ -127,9 +127,26 @@ href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/results.js
 <td>9</td>
 <td>逐题<strong>判定</strong>（对/错/错在哪/怎么修）</td>
 <td><code>eval/report.md</code>（1068 行）：每题「召回情况 + 判定 +
-错在哪 + 怎么修 + 遗留」</td>
+错在哪 + 怎么修 + 遗留」；<strong>复核人视角的精简版见
+<code>逐题判定表.md</code></strong>（按「参考依据 — 实际答案 — 判定 —
+证据与错误原因」四段重排，10 题一页看完）</td>
 <td><a
-href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/report.md">report.md</a></td>
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/report.md">report.md</a>
+· <a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/逐题判定表.md">逐题判定表.md</a></td>
+</tr>
+<tr>
+<td>13</td>
+<td>逐题<strong>答案判定</strong>：正确 / 部分 / 错误 +
+理由；两道全景题<strong>逐公司列覆盖与缺失</strong></td>
+<td><code>逐题判定表.md</code>：每题给出金标与出处、系统输出的实际答案原文、判定与理由、证据与错误原因；Q5
+/ Q6 附 <strong>12 家公司逐公司覆盖表</strong>（向量 / BM25 / 混合 /
+无预过滤 四通道是否召回到 + 是否进入答案前三）；判定口径与「召回 ≠
+作答」的分层说明写在表头</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/逐题判定表.md">逐题判定表.md</a>
+· <a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/逐题判定表.pdf">PDF</a></td>
 </tr>
 <tr>
 <td>10</td>
@@ -180,7 +197,10 @@ href="https://github.com/jinyanxiaonku6/earnings-rag/tree/master/shots">shots/</
 <code>$contains="主要会计数据"</code> 表头词定位」后
 <strong>12/12</strong>。</li>
 </ul>
-<p><strong>作答层</strong>（每题「判定」段）</p>
+<p><strong>作答层</strong>（每题「判定」段；单独成表的精简版见 <a
+href="逐题判定表.md"><code>逐题判定表.md</code></a>，每题 「参考依据 —
+实际答案 — 判定 — 证据与错误原因」四段并列，<strong>10 题逐题给正确 /
+部分 / 错误判定及理由</strong>）</p>
 <ul>
 <li>写清「答对 /
 答错」、答案数值、以及<strong>证据出处</strong>（公司+报告+页码）；</li>

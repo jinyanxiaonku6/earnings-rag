@@ -1,0 +1,51 @@
+Building prefix dict from the default dictionary ...
+Dumping model to file cache C:\Users\Rookie\AppData\Local\Temp\jieba.cache
+Loading model cost 1.223 seconds.
+Prefix dict has been built successfully.
+Loading weights:   0%|          | 0/310 [00:00<?, ?it/s]Loading weights:   3%|▎         | 10/310 [00:00<00:03, 96.36it/s]Loading weights:  17%|█▋        | 53/310 [00:00<00:01, 161.39it/s]Loading weights:  28%|██▊       | 86/310 [00:00<00:01, 204.78it/s]Loading weights:  35%|███▍      | 108/310 [00:00<00:01, 163.29it/s]Loading weights:  41%|████      | 126/310 [00:00<00:01, 127.26it/s]Loading weights:  48%|████▊     | 150/310 [00:01<00:01, 137.97it/s]Loading weights:  53%|█████▎    | 165/310 [00:01<00:01, 102.35it/s]Loading weights:  57%|█████▋    | 177/310 [00:01<00:01, 100.71it/s]Loading weights:  61%|██████    | 189/310 [00:01<00:01, 102.17it/s]Loading weights:  65%|██████▍   | 200/310 [00:01<00:01, 97.03it/s] Loading weights: 100%|██████████| 310/310 [00:01<00:00, 185.19it/s]
+检索器就绪 91s  后端=extractive
+  Q1 vector 命中=3 覆盖=-  片段数=8
+  Q1 bm25   命中=None 覆盖=-  片段数=8
+  Q1 hybrid 命中=3 覆盖=-  片段数=8
+  Q1 hybrid_all 命中=5 覆盖=-  (对照组)
+  Q2 vector 命中=None 覆盖=-  片段数=8
+  Q2 bm25   命中=3 覆盖=-  片段数=8
+  Q2 hybrid 命中=None 覆盖=-  片段数=8
+  Q2 hybrid_all 命中=None 覆盖=-  (对照组)
+  Q3 vector 命中=1 覆盖=-  片段数=8
+  Q3 bm25   命中=2 覆盖=-  片段数=8
+  Q3 hybrid 命中=1 覆盖=-  片段数=8
+  Q3 hybrid_all 命中=1 覆盖=-  (对照组)
+  Q4 vector 命中=3 覆盖=-  片段数=8
+  Q4 bm25   命中=2 覆盖=-  片段数=8
+  Q4 hybrid 命中=1 覆盖=-  片段数=8
+  Q4 hybrid_all 命中=1 覆盖=-  (对照组)
+  Q5 vector 命中=None 覆盖=4  片段数=8
+  Q5 bm25   命中=None 覆盖=4  片段数=8
+  Q5 hybrid 命中=None 覆盖=3  片段数=8
+  Q5 hybrid_all 命中=None 覆盖=3  (对照组)
+  Q5 panorama  覆盖=12/12
+  Q5 逐家对账 12/12
+  Q6 vector 命中=None 覆盖=3  片段数=8
+  Q6 bm25   命中=None 覆盖=4  片段数=8
+  Q6 hybrid 命中=None 覆盖=5  片段数=8
+  Q6 hybrid_all 命中=None 覆盖=5  (对照组)
+  Q6 panorama  覆盖=12/12
+  Q6 逐家对账 12/12
+  Q7 vector 命中=3 覆盖=-  片段数=8
+  Q7 bm25   命中=None 覆盖=-  片段数=8
+  Q7 hybrid 命中=None 覆盖=-  片段数=8
+  Q7 hybrid_all 命中=6 覆盖=-  (对照组)
+  Q8 vector 命中=5 覆盖=-  片段数=8
+  Q8 bm25   命中=None 覆盖=-  片段数=8
+  Q8 hybrid 命中=None 覆盖=-  片段数=8
+  Q8 hybrid_all 命中=None 覆盖=-  (对照组)
+  Q9 vector 命中=1 覆盖=-  片段数=8
+  Q9 bm25   命中=None 覆盖=-  片段数=8
+  Q9 hybrid 命中=1 覆盖=-  片段数=8
+  Q9 hybrid_all 命中=1 覆盖=-  (对照组)
+  Q10 vector 命中=None 覆盖=-  片段数=8
+  Q10 bm25   命中=None 覆盖=-  片段数=8
+  Q10 hybrid 命中=None 覆盖=-  片段数=8
+  Q10 hybrid_all 命中=None 覆盖=-  (对照组)
+写出 C:\Users\Rookie\projects\earnings_rag\eval\results.json

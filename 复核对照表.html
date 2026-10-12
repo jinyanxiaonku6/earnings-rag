@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<title>作业3 · 方向A — 复核对照表</title>
+<style>
+  @page { size: A4; margin: 12mm 12mm; }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: #16181d; background: #fff;
+         font: 9.2pt/1.5 "Source Han Sans CN", "Noto Sans SC", "Microsoft YaHei", sans-serif; }
+  h1 { font-size: 15pt; margin: 0 0 3px; letter-spacing: -.2px; }
+  h2 { font-size: 10.6pt; margin: 12px 0 5px; padding-left: 7px;
+       border-left: 3px solid #2563eb; line-height: 1.3; }
+  h3 { font-size: 9.6pt; margin: 9px 0 4px; }
+  p { margin: 5px 0; }
+  ul { margin: 5px 0 5px 16px; padding: 0; }
+  li { margin: 2px 0; }
+  code { font-family: Consolas, "Courier New", monospace; font-size: 8.4pt;
+         background: #f2f4f8; padding: 0 2px; border-radius: 2px; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.2pt; margin: 6px 0 4px; }
+  th, td { border: 1px solid #e3e6ec; padding: 3px 5px; text-align: left;
+           vertical-align: top; word-break: break-word; }
+  th { background: #f2f5fa; font-weight: 700; }
+  a { color: #2563eb; text-decoration: none; }
+  blockquote { margin: 6px 0; padding: 6px 9px; background: #fafbfd;
+               border-left: 3px solid #d7dbe3; color: #374151; font-size: 8.8pt; }
+  hr { border: none; border-top: 1px solid #e6e9ef; margin: 10px 0; }
+  /* 出处 URL 列太长，缩小一点；序号列别折行 */
+  td:last-child { font-size: 7.6pt; }
+  td:first-child, th:first-child { white-space: nowrap; text-align: center; }
+</style></head>
+<body>
+<h1 id="作业3--方向a--复核对照表">作业3 · 方向A — 复核对照表</h1>
+<p><strong>代码仓库（公开）</strong>：<a
+href="https://github.com/jinyanxiaonku6/earnings-rag">https://github.com/jinyanxiaonku6/earnings-rag</a></p>
+<p><strong>这次交的是什么</strong>：把 12 家 A 股光模块 / 光通信公司的
+<strong>2025 年度报告 + 2026 半年度报告</strong> （共 <strong>24
+份</strong>，全部取自巨潮资讯网公开披露文件）做成一个能问答的本地知识库
+—— <strong>向量检索 + BM25
+混合召回（RRF）</strong>，答案从原文摘句、逐条带「公司 / 报告 / 章节 /
+页码」出处。 10 道评测题（含 2 道跨公司全景题、1 道应拒答题），10/10
+作答正确，召回与作答分开评价。</p>
+<blockquote>
+<p>抓取、抽文本、切块、向量化、BM25、融合、作答、评测的<strong>全部实现都在本仓库内</strong>
+（<code>scripts/</code> 8 个文件 + <code>eval/</code> 5 个文件 +
+<code>data/manifest.json</code>，初始提交 fa940fe，共 24 个文件）。
+作业1 的前端源码仓与本作业无关，本作业没有复用它的任何代码。</p>
+</blockquote>
+<hr />
+<h2 id="一按复核意见逐条对应">一、按复核意见逐条对应</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>复核要求</th>
+<th>落地材料（仓库内路径）</th>
+<th>在线直链</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>至少 10 家公司<strong>官方完整报告</strong>的清单与出处</td>
+<td><code>data/manifest.json</code> —— 12 家 × 2 期 = 24
+条，每条含公司名 / 代码 / 报告期 / 公告标题 / 文件名 /
+<strong>巨潮资讯网原始 URL</strong></td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/data/manifest.json">manifest.json</a></td>
+</tr>
+<tr>
+<td>2</td>
+<td>报告本体（可复现）</td>
+<td><code>scripts/fetch_reports.py</code> 按 manifest
+逐份下载，已下载自动跳过；24 份 PDF 可一键重建（PDF 体积大未入库）</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/scripts/fetch_reports.py">fetch_reports.py</a></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>向量检索</strong>实现</td>
+<td><code>scripts/build_index.py</code>：Qwen3-Embedding-0.6B（1024
+维，<code>max_seq_length=1024</code>）→ Chroma，cosine</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/scripts/build_index.py">build_index.py</a></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>BM25</strong> 实现</td>
+<td><code>scripts/build_index.py</code>：jieba
+<code>cut_for_search</code> 分词 + <code>BM25Okapi</code>，索引落盘
+<code>data/bm25.pkl</code></td>
+<td>同上</td>
+</tr>
+<tr>
+<td>5</td>
+<td>混合（融合）实现</td>
+<td><code>scripts/search.py</code>：RRF <code>k=60</code>，两路各取 30
+个候选；另含元数据预过滤与条目定位</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/scripts/search.py">search.py</a></td>
+</tr>
+<tr>
+<td>6</td>
+<td>切块与元数据（页码/章节）</td>
+<td><code>scripts/chunk.py</code>：按章节/表格边界切，块带 company /
+report / section / page</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/scripts/chunk.py">chunk.py</a></td>
+</tr>
+<tr>
+<td>7</td>
+<td>10 道题（≥2 道跨公司全景题）</td>
+<td><code>eval/questions.json</code> —— Q1–Q10，5 类：精确数字 / 语义 /
+表格计算 / <strong>跨公司全景（Q5、Q6）</strong> /
+应拒答（Q10）；含金标公司+报告+页码</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/questions.json">questions.json</a></td>
+</tr>
+<tr>
+<td>8</td>
+<td>逐题<strong>真实答案</strong>与检索证据</td>
+<td><code>eval/results.json</code> —— 原始运行输出，10 条 record，每条含
+<code>question / gt / modes</code>（三路召回条目）/
+<code>hits_for_answer</code> / <code>answer_extractive</code></td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/results.json">results.json</a></td>
+</tr>
+<tr>
+<td>9</td>
+<td>逐题<strong>判定</strong>（对/错/错在哪/怎么修）</td>
+<td><code>eval/report.md</code>（1068 行）：每题「召回情况 + 判定 +
+错在哪 + 怎么修 + 遗留」</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/report.md">report.md</a></td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>实际运行输出</strong></td>
+<td><code>eval/run_2026-10-12.txt</code>（本次复跑 stdout，10 题 × 3 路
+× 命中/覆盖）；<code>eval/results.json</code>
+即该次运行的落盘结果，<strong>与 2026-09-29
+首次评测逐字节一致</strong>（10 题召回名次、覆盖家数全部复现）</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/eval/run_2026-10-12.txt">run_2026-10-12.txt</a></td>
+</tr>
+<tr>
+<td>11</td>
+<td>复现步骤</td>
+<td><code>README.md</code>「怎么跑」5 步：装依赖 → 抓报告 → 建索引 →
+提问 → 起网页</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/README.md">README.md</a></td>
+</tr>
+<tr>
+<td>12</td>
+<td>一页结论 / 问答截图（沿用已有）</td>
+<td><code>一页结论.pdf</code>（源
+<code>一页结论.html</code>）、<code>shots/</code> 4
+张（<code>scripts/shots.py</code> 可重跑）</td>
+<td><a
+href="https://github.com/jinyanxiaonku6/earnings-rag/blob/master/一页结论.pdf">一页结论.pdf</a>
+· <a
+href="https://github.com/jinyanxiaonku6/earnings-rag/tree/master/shots">shots/</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="二召回命中-与-答题正确-是分开评价的">二、召回命中 与 答题正确
+是分开评价的</h2>
+<p>对应第三课 61–63（召回评估）与
+90–92（生成/作答评估）、163（实验记录）三处要求，本项目把两层指标
+拆开、并列展示，<strong>不合并成一个总分</strong>：</p>
+<p><strong>召回层</strong>（<code>eval/report.md</code>
+的「汇总」表，只记名次/覆盖数，与答案对错无关）</p>
+<ul>
+<li>单公司题记 <strong>金标块名次</strong>：命中判定 =
+检索结果里出现「金标公司 + 金标报告 + 金标页 ±1 页」的块；</li>
+<li>跨公司全景题记 <strong>覆盖家数</strong>（12 家中召回了几家）；</li>
+<li>五列对照：<code>向量 / BM25 / 混合 / 混合(关掉元数据预过滤) / 全景枚举</code>。</li>
+<li>结论：单次检索在跨公司题上只覆盖 <strong>3–5 / 12
+家</strong>（三路都一样，融合有时是负贡献）； 换成「逐公司枚举 +
+<code>$contains="主要会计数据"</code> 表头词定位」后
+<strong>12/12</strong>。</li>
+</ul>
+<p><strong>作答层</strong>（每题「判定」段）</p>
+<ul>
+<li>写清「答对 /
+答错」、答案数值、以及<strong>证据出处</strong>（公司+报告+页码）；</li>
+<li>答错或答得不理想的照写不删：<strong>Q8
+首句不理想</strong>（正确句排在第 2 条）、
+<strong>拒答守卫是启发式</strong>（英文名/简称会漏判）、<strong>Q9
+是绕开不是堵住</strong>， 三条都进了 README「已知短板」。</li>
+</ul>
+<p><strong>两层不同步的例子</strong>（正说明必须分开看）：Q2 / Q7 / Q8
+三路混合检索<strong>都没命中金标块</strong>，
+但最终作答仍<strong>答对</strong> —— 因为答案层走了「逐公司枚举 /
+表头词定位 / 摘句打分」另一条路。
+若把召回和作答揉成一个分数，这三题既算不清也对不上账。</p>
+<hr />
+<h2 id="三语料清单与出处12-家--2-期--24-份">三、语料清单与出处（12 家 ×
+2 期 = 24 份）</h2>
+<p><code>data/manifest.json</code>
+全量展开。「披露日期」取自巨潮资讯网原文链接路径。 <strong>2026-10-12 对
+24 条 URL 逐条做了 HTTP HEAD 校验：24/24 返回
+200</strong>（脚本：<code>curl -I</code> 逐条检查）。</p>
+<table>
+<thead>
+<tr>
+<th>公司</th>
+<th>代码</th>
+<th>报告</th>
+<th>披露日期</th>
+<th>原始出处</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中际旭创</td>
+<td>300308</td>
+<td>2025年年度报告</td>
+<td>2026-03-31</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-31/1225056459.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>中际旭创</td>
+<td>300308</td>
+<td>2026年半年度报告</td>
+<td>2026-08-22</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-22/1225491753.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>新易盛</td>
+<td>300502</td>
+<td>2025年年度报告</td>
+<td>2026-04-24</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-04-24/1225172598.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>新易盛</td>
+<td>300502</td>
+<td>2026年半年度报告</td>
+<td>2026-08-25</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-25/1225499406.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>天孚通信</td>
+<td>300394</td>
+<td>2025年年度报告</td>
+<td>2026-04-08</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-04-08/1225082705.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>天孚通信</td>
+<td>300394</td>
+<td>2026年半年度报告</td>
+<td>2026-08-19</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-19/1225480328.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>光迅科技</td>
+<td>002281</td>
+<td>2025年年度报告</td>
+<td>2026-04-23</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-04-23/1225148212.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>光迅科技</td>
+<td>002281</td>
+<td>2026年半年度报告</td>
+<td>2026-08-20</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-20/1225482609.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>博创科技</td>
+<td>300548</td>
+<td>2025年年度报告</td>
+<td>2026-03-28</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-28/1225045047.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>博创科技</td>
+<td>300548</td>
+<td>2026年半年度报告</td>
+<td>2026-08-22</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-22/1225492397.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>太辰光</td>
+<td>300570</td>
+<td>2025年年度报告</td>
+<td>2026-03-31</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-31/1225061015.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>太辰光</td>
+<td>300570</td>
+<td>2026年半年度报告</td>
+<td>2026-08-15</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-15/1225475478.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>剑桥科技</td>
+<td>603083</td>
+<td>2025年年度报告</td>
+<td>2026-03-31</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-31/1225053610.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>剑桥科技</td>
+<td>603083</td>
+<td>2026年半年度报告</td>
+<td>2026-08-25</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-25/1225496844.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>华工科技</td>
+<td>000988</td>
+<td>2025年年度报告</td>
+<td>2026-03-26</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-26/1225031509.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>华工科技</td>
+<td>000988</td>
+<td>2026年半年度报告</td>
+<td>2026-08-27</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-27/1225513179.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>源杰科技</td>
+<td>688498</td>
+<td>2025年年度报告</td>
+<td>2026-03-25</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-25/1225028582.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>源杰科技</td>
+<td>688498</td>
+<td>2026年半年度报告</td>
+<td>2026-08-29</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-29/1225527905.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>仕佳光子</td>
+<td>688313</td>
+<td>2025年年度报告</td>
+<td>2026-04-18</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-04-18/1225122538.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>仕佳光子</td>
+<td>688313</td>
+<td>2026年半年度报告</td>
+<td>2026-08-01</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-01/1225451928.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>德科立</td>
+<td>688205</td>
+<td>2025年年度报告</td>
+<td>2026-03-31</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-03-31/1225064041.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>德科立</td>
+<td>688205</td>
+<td>2026年半年度报告</td>
+<td>2026-08-18</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-18/1225478519.PDF">巨潮原文</a></td>
+</tr>
+<tr>
+<td>联特科技</td>
+<td>301205</td>
+<td>2025年年度报告</td>
+<td>2026-04-29</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-04-29/1225239616.pdf">巨潮原文</a></td>
+</tr>
+<tr>
+<td>联特科技</td>
+<td>301205</td>
+<td>2026年半年度报告</td>
+<td>2026-08-28</td>
+<td><a
+href="http://static.cninfo.com.cn/finalpage/2026-08-28/1225521480.PDF">巨潮原文</a></td>
+</tr>
+</tbody>
+</table>
+<p>单位口径提醒：<strong>德科立（688205）整份报告以「千元」列示</strong>，其余
+11 家为「元」。这条已写进作答层， 否则该题会错一个量级（见
+<code>eval/report.md</code> Q4）。</p>
+<hr />
+<h2 id="四怎么复跑出以上材料">四、怎么复跑出以上材料</h2>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv <span class="kw">&amp;&amp;</span> <span class="ex">.venv/Scripts/pip</span> install <span class="at">-r</span> requirements.txt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/fetch_reports.py                                  <span class="co"># 按 manifest 抓 24 份 PDF</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/extract.py <span class="kw">&amp;&amp;</span> <span class="ex">python</span> scripts/chunk.py <span class="kw">&amp;&amp;</span> <span class="ex">python</span> scripts/build_index.py</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> eval/run_eval.py <span class="at">--k</span> 8      <span class="co"># → eval/results.json（10 题三路召回 + 作答）</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> eval/make_report.py         <span class="co"># → eval/report.md（逐题记录）</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/ask.py <span class="st">&quot;中际旭创2026年上半年营业收入是多少？&quot;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> scripts/app.py 8848         <span class="co"># 网页版 → http://127.0.0.1:8848/?q=...</span></span></code></pre></div>
+<p>本次复跑输出见
+<code>eval/run_2026-10-12.txt</code>；作答不调用任何外部
+API（<code>.env</code> 未配置，也不在仓库里）。</p>
+
+</body></html>
